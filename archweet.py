@@ -29,7 +29,7 @@ def goarchweet(query):
 		if 'next_page' in response:
 			fields['page'] += 1
 			fields['max_id'] = response['max_id_str']
-			r = http.request('GET', 'http://search.twitter.com/search.json', fields)
+			r = http.request('GET', 'https://api.twitter.com/1.1/search/tweets.json', fields)
 			response = json.loads(r.data, encoding='utf-8')
 			results = response['results']
 			json_file = open(json_file_name, 'a')
