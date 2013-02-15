@@ -39,7 +39,7 @@ def goarchweet(query):
 			nb_results += len(results)
 			print nb_results
 		else:
-			time.sleep(60)
+			time.sleep(300)
 			fields['page'] = 1
 			try:
 				del fields['max_id']
