@@ -13,7 +13,10 @@ Use Python module Twython for querying Twitter API.
 To log results, execute the script from terminal like this:
     
     python archweet.py | tee /path/to/your/file.json
+    
+For letting it run on a server without being logged, use screen, or:
 
+    nohup python archweet.py | tee /path/to/your/file.json &
 '''
 
 # To get the following 4 credentials, got to https://dev.twitter.com/apps and create a new application and generate them.
