@@ -1,70 +1,43 @@
-import os, sys
-import urllib3
-import json
-import time
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-def goarchweet(query):
-	nb_results = 0
+import sys
+from twython import Twython
+from twython import TwythonStreamer
 
-	json_file_name = "%s/%s.json" % ( os.getcwd(), query.replace(' ','') )
-	json_file = open(json_file_name, 'w')
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
-	http = urllib3.PoolManager()
-	fields = {
-		'q': query.replace(' ', '+'),
-		'rpp': 100,
-		'page' : 1,
-	}
-	r = http.request('GET', 'http://search.twitter.com/search.json', fields)
-	response = json.loads(r.data, encoding='utf-8')
-	results = response['results']
-	since_id = results[0]['id']
-	for each in results:
-		json_file.write(json.dumps(each) + '\n')
-	json_file.close()
-	nb_results += len(results)
-	print nb_results
+'''
+Use Python module Twython for querying Twitter API.
+To log results, execute the script from terminal like this:
+    
+    python archweet.py | tee /path/to/your/file.json
 
-	while True:
-		if 'next_page' in response:
-			fields['page'] += 1
-			fields['max_id'] = response['max_id_str']
-			r = http.request('GET', 'http://search.twitter.com/search.json', fields)
-			response = json.loads(r.data, encoding='utf-8')
-			results = response['results']
-			json_file = open(json_file_name, 'a')
-			for each in results:
-				json_file.write(json.dumps(each) + '\n')
-			json_file.close()
-			nb_results += len(results)
-			print nb_results
-		else:
-			time.sleep(300)
-			fields['page'] = 1
-			try:
-				del fields['max_id']
-			except:
-				pass
-			fields['since_id'] = since_id
-			r = http.request('GET', 'http://search.twitter.com/search.json', fields)
-			response = json.loads(r.data, encoding='utf-8')
-			results = response['results']
-			if len(results) == 0:
-				pass
-			else:
-				since_id = results[0]['id']
-				json_file = open(json_file_name, 'a')
-				for each in results:
-					json_file.write(json.dumps(each) + '\n')
-				json_file.close()
-				nb_results += len(results)
-				print nb_results
+'''
+
+# To get the following 4 credentials, got to https://dev.twitter.com/apps and create a new application and generate them.
+
+APP_KEY = ''
+APP_SECRET = ''
+OAUTH_TOKEN = ''
+OAUTH_TOKEN_SECRET = ''
+
+class MyStreamer(TwythonStreamer):
+    def on_success(self, data):
+        print data
+    
+    def on_error(self, status_code, data):
+        print status_code
+
+stream = MyStreamer(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2:
-		print 'one query within quote please !'
-		sys.exit(2)
-	else:
-		query = sys.argv[1]
-		print "archweeting for query: %s" % sys.argv[1]
-		goarchweet(query)
+    pass
+    # Query Filter API, more details at https://dev.twitter.com/docs/api/1.1/post/statuses/filter
+    # Example:
+    # stream.statuses.filter(track=':),:(')
+    
+    # Query SAMPLE API, more detail at https://dev.twitter.com/docs/api/1.1/get/statuses/sample
+    # Example:
+    # stream.statuses.sample()
