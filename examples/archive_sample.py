@@ -13,14 +13,14 @@ OAUTH_TOKEN_SECRET = ''
 ARCHIVE_FOLDER = ""
 
 global timestamp
-timestamp = '-'.join([str(x) for x in datetime.utcnow().timetuple()[:5]])
+timestamp = '-'.join([str(x) for x in datetime.utcnow().timetuple()[:4]])
 
 global archive_file
 archive_file = gzip.open('%stwitter_sample-%s.json.gz' % (ARCHIVE_FOLDER, timestamp), 'wb')
 
 
 def archive(data, timestamp):
-    new_timestamp = '-'.join([str(x) for x in datetime.utcnow().timetuple()[:5]])
+    new_timestamp = '-'.join([str(x) for x in datetime.utcnow().timetuple()[:4]])
     if timestamp == new_timestamp:
         archive_file.write(json.dumps(data, encoding='utf-8'))
     elif timestamp != new_timestamp:
